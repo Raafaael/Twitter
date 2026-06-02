@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, Mail, Bookmark, User as UserIcon, LogOut, Feather } from "lucide-react";
+import { Home, Mail, Bookmark, Radio, User as UserIcon, LogOut, Feather } from "lucide-react";
 import { Avatar } from "./avatar";
 import { logoutAction } from "@/actions/auth";
 
@@ -12,6 +12,7 @@ type SessionUser = {
 
 const NAV: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: "/", label: "Início", icon: Home },
+  { href: "/spaces", label: "Spaces", icon: Radio },
   { href: "/messages", label: "Mensagens", icon: Mail },
   { href: "/bookmarks", label: "Itens salvos", icon: Bookmark },
 ];

@@ -17,13 +17,15 @@ model User {
   avatarUrl    String?
   createdAt    DateTime @default(now())
 
-  posts         Post[]         @relation("AuthorPosts")
+  posts         Post[]             @relation("AuthorPosts")
   likes         Like[]
   bookmarks     Bookmark[]
-  following     Follow[]       @relation("Follower")
-  followers     Follow[]       @relation("Following")
-  sentMessages  Message[]      @relation("Sender")
-  recvMessages  Message[]      @relation("Receiver")
+  following     Follow[]           @relation("Follower")
+  followers     Follow[]           @relation("Following")
+  sentMessages  Message[]          @relation("Sender")
+  recvMessages  Message[]          @relation("Receiver")
+  hostedSpaces  Space[]            @relation("HostSpaces")
+  spaceJoins    SpaceParticipant[]
 }
 
 model Post {
@@ -95,4 +97,31 @@ model Message {
 
   @@index([senderId, receiverId])
   @@index([receiverId, senderId])
+}
+
+model Space {
+  id        String    @id @default(cuid())
+  title     String
+  hostId    String
+  status    String    @default("LIVE") // LIVE | ENDED
+  createdAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  host         User               @relation("HostSpaces", fields: [hostId], references: [id], onDelete: Cascade)
+  participants SpaceParticipant[]
+
+  @@index([status, createdAt])
+}
+
+model SpaceParticipant {
+  spaceId  String
+  userId   String
+  role     String   @default("LISTENER") // HOST | SPEAKER | LISTENER
+  joinedAt DateTime @default(now())
+
+  space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([spaceId, userId])
+  @@index([userId])
 }
