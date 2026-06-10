@@ -12,7 +12,8 @@ model User {
   email        String   @unique
   username     String   @unique
   name         String
-  passwordHash String
+  passwordHash String?  // null = só OAuth, sem senha local
+  status       String   @default("ACTIVE") // ACTIVE | BANNED
   bio          String?
   avatarUrl    String?
   createdAt    DateTime @default(now())
@@ -124,4 +125,18 @@ model SpaceParticipant {
 
   @@id([spaceId, userId])
   @@index([userId])
+}
+
+model EmailVerification {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String
+  name          String
+  codeHash      String
+  linkTokenHash String?   @unique
+  attempts      Int       @default(0)
+  lastSentAt    DateTime  @default(now())
+  expiresAt     DateTime
+  verifiedAt    DateTime?
+  createdAt     DateTime  @default(now())
 }

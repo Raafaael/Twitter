@@ -1,10 +1,10 @@
 "use client";
 
 import { useActionState } from "react";
-import { registerAction } from "@/actions/auth";
+import { startRegistrationAction } from "@/actions/registration";
 
 export function RegisterForm() {
-  const [state, action, pending] = useActionState(registerAction, undefined);
+  const [state, action, pending] = useActionState(startRegistrationAction, undefined);
 
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -37,17 +37,6 @@ export function RegisterForm() {
           className="bg-transparent border border-border focus:border-accent rounded-md px-4 py-3 outline-none text-[15px]"
         />
       </label>
-      <label className="flex flex-col gap-1">
-        <span className="text-sm text-muted">Senha</span>
-        <input
-          name="password"
-          type="password"
-          required
-          minLength={6}
-          autoComplete="new-password"
-          className="bg-transparent border border-border focus:border-accent rounded-md px-4 py-3 outline-none text-[15px]"
-        />
-      </label>
 
       {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
 
@@ -56,7 +45,7 @@ export function RegisterForm() {
         disabled={pending}
         className="bg-text text-black font-bold rounded-full h-12 hover:bg-text/90 disabled:opacity-50 transition mt-2"
       >
-        {pending ? "Criando conta..." : "Criar conta"}
+        {pending ? "Enviando código..." : "Enviar código"}
       </button>
     </form>
   );
