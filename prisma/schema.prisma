@@ -27,6 +27,8 @@ model User {
   recvMessages  Message[]          @relation("Receiver")
   hostedSpaces  Space[]            @relation("HostSpaces")
   spaceJoins    SpaceParticipant[]
+  notificationsReceived Notification[] @relation("NotificationsReceived")
+  notificationsCaused   Notification[] @relation("NotificationsCaused")
 }
 
 model Post {
@@ -110,6 +112,7 @@ model Space {
 
   host         User               @relation("HostSpaces", fields: [hostId], references: [id], onDelete: Cascade)
   participants SpaceParticipant[]
+  notifications Notification[]
 
   @@index([status, createdAt])
 }
@@ -139,4 +142,20 @@ model EmailVerification {
   expiresAt     DateTime
   verifiedAt    DateTime?
   createdAt     DateTime  @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  actorId   String
+  type      String   // "FOLLOW" | "SPACE"
+  spaceId   String?  // usado quando type = "SPACE"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user  User   @relation("NotificationsReceived", fields: [userId], references: [id], onDelete: Cascade)
+  actor User   @relation("NotificationsCaused", fields: [actorId], references: [id], onDelete: Cascade)
+  space Space? @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

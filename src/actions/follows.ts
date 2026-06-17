@@ -18,9 +18,13 @@ export async function toggleFollowAction(formData: FormData) {
     });
   } else {
     await prisma.follow.create({ data: { followerId: user.id, followingId: targetId } });
+    await prisma.notification.create({  
+      data: { userId: targetId, actorId: user.id, type: "FOLLOW" },
+    });
   }
 
   const target = await prisma.user.findUnique({ where: { id: targetId }, select: { username: true } });
   revalidatePath("/");
+  revalidatePath("/notifications");
   if (target) revalidatePath(`/${target.username}`);
 }

@@ -23,7 +23,25 @@ export async function createSpaceAction(formData: FormData) {
     select: { id: true },
   });
 
+  // Notifica os seguidores do host
+  const followers = await prisma.follow.findMany({
+    where: { followingId: user.id },
+    select: { followerId: true },
+  });
+
+  if (followers.length > 0) {
+    await prisma.notification.createMany({
+      data: followers.map((f) => ({
+        userId: f.followerId,
+        actorId: user.id,
+        type: "SPACE",
+        spaceId: space.id,
+      })),
+    });
+  }
+
   revalidatePath("/spaces");
+  revalidatePath("/", "layout");
   redirect(`/spaces/${space.id}`);
 }
 
