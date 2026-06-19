@@ -11,4 +11,5 @@ export async function markNotificationsReadAction() {
     data: { read: true },
   });
   revalidatePath("/notifications");
+  revalidatePath("/", "layout");
 }

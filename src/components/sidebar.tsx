@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Home, Mail, Bookmark, Radio, User as UserIcon, LogOut, Feather, Bell } from "lucide-react";
-import { prisma } from "@/lib/db";
 import { Avatar } from "./avatar";
+import { NotificationBadge } from "./notification-badge";
 import { logoutAction } from "@/actions/auth";
 
 type SessionUser = {
@@ -20,7 +20,6 @@ const NAV: { href: string; label: string; icon: React.ComponentType<{ className?
 ];
 
 export function Sidebar({ user, unreadCount }: { user: SessionUser; unreadCount: number }) {
-  console.log("unreadCount no sidebar:", unreadCount);
   return (
     <aside className="hidden sm:flex sticky top-0 h-screen w-[88px] xl:w-[275px] flex-col items-stretch px-2 xl:px-4 py-2 shrink-0">
       <Link
@@ -40,9 +39,7 @@ export function Sidebar({ user, unreadCount }: { user: SessionUser; unreadCount:
   >
     <span className="relative">
       <item.icon className="w-7 h-7" />
-      {item.href === "/notifications" && unreadCount > 0 && (
-        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-accent rounded-full" />
-      )}
+      {item.href === "/notifications" && <NotificationBadge initialCount={unreadCount} />}
     </span>
     <span className="hidden xl:inline text-xl">{item.label}</span>
   </Link>

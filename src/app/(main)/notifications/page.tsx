@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { Avatar } from "@/components/avatar";
 import { FollowButton } from "@/components/follow-button";
 import { timeAgo } from "@/lib/format";
+import { MarkNotificationsRead } from "./mark-read";
 
 export default async function NotificationsPage() {
   const me = await requireUser();
@@ -25,13 +26,11 @@ export default async function NotificationsPage() {
     })
   ).map((f) => f.followingId);
 
-  await prisma.notification.updateMany({
-    where: { userId: me.id, read: false },
-    data: { read: true },
-  });
+  const hasUnread = notifications.some((n) => !n.read);
 
   return (
     <>
+      <MarkNotificationsRead hasUnread={hasUnread} />
       <header className="sticky top-0 z-10 backdrop-blur bg-bg/70 border-b border-border">
         <h1 className="text-xl font-bold px-4 py-4">Notificações</h1>
       </header>
